@@ -9,11 +9,15 @@ class Particle(object):
     ###################################
     # INITIALIZATION                  #
     ###################################
-    def __init__(self, pos, c1, c2):
+    def __init__(self, pos, bounds, c1, c2):
         # setup position and velocity arrays
         self._pos = [pos]
-        self._vel = [[np.random.random_sample() for x in pos]]
+        self._bounds = bounds
         self._dim = len(pos)
+        self._vel = [[np.random.random_sample() for x in pos]]
+        # setup velocity extreems
+        self._vmin = -1.0
+        self._vmax = 1.0
         # setup local fitness arrays
         self._pBestFit = [float('inf')]
         self._pBestPos = [pos]
@@ -21,9 +25,6 @@ class Particle(object):
         # setup learning factors
         self._c1 = c1
         self._c2 = c2
-        # setup velocity extreems
-        self._vmin = -1.0
-        self._vmax = 1.0
 
     ###################################
     # UPDATES                         #
@@ -46,23 +47,16 @@ class Particle(object):
         l_factor1 = self._c1 * np.random.random_sample()
         pVel = np.subtract(self._pBestPos[-1], self._pos[-1])
         pVel = np.multiply(l_factor1, pVel)
-        #print('#'*45)
-        #print('pVel: ' + str(pVel))
         # gVel = c2 * rand(0,1) * (gBest - Pos)
         l_factor2 = self._c2 * np.random.random_sample()
         gVel = np.subtract(gBest[-1], self._pos[-1])
         gVel = np.multiply(l_factor2, gVel)
-        #print('gVel: ' + str(gVel))
         # dVel = pVel + gVel
         dVel = np.add(pVel, gVel)
-        #print('dVel: ' + str(dVel))
-        #print('cVel: ' + str(self._vel[-1]))
         # v[] += dVel
         nVel = np.add(self._vel[-1], dVel)
-        #print('nVel: ' + str(nVel))
         # clamp velocities to prevent them from getting out of hand.
         nVel = np.clip(nVel, self._vmin, self._vmax)
-        #print('clip: ' + str(nVel))
         # store it. 
         self._vel.append(nVel)            
     
