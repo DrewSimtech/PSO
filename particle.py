@@ -9,19 +9,18 @@ class Particle(object):
     ################################### 
     # INITIALIZATION                  #
     ###################################
-    def __init__(self, pos, bounds, c1, c2):
+    def __init__(self, pos, bounds, velClamp, c1, c2):
         # setup position and velocity arrays
         self._pos = [pos]
         self._bounds = bounds
         self._dim = len(pos)
         self._vel = [[np.random.random_sample() for x in pos]]
         # setup velocity extreems
-        self._vmin = -1.0
-        self._vmax = 1.0
+        self._velClamp = velClamp
         # setup local fitness arrays
         self._pBestFit = [float('inf')]
         self._pBestPos = [pos]
-        self._fit   = [float('inf')]
+        self._fit      = [float('inf')]
         # setup learning factors
         self._c1 = c1
         self._c2 = c2
@@ -56,9 +55,12 @@ class Particle(object):
         # v[] += dVel
         nVel = np.add(self._vel[-1], dVel)
         # clamp velocities to prevent them from getting out of hand.
-        nVel = np.clip(nVel, self._vmin, self._vmax)
+        clamp_nVel = []
+        # each variable can have different velocities, so we cant generalize this part.
+        for i in range(len(nVel)):
+            clamp_nVel.append(np.clip(nVel[i], -self._velClamp[i], self._velClamp[i]))
         # store it. 
-        self._vel.append(nVel)            
+        self._vel.append(clamp_nVel)            
     
     def updatePosition(self):
         '''Position update function:

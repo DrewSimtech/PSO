@@ -6,9 +6,9 @@ import plot
 
 
 def main():
-    start_pos = [ 2,  -4]
-    bounds    = [10, -10]
-    best_fit = particalSwarm(ackley, start_pos, bounds)
+    bounds     = [[-10, 10], [-5, 5]]
+    velocities = [2, 1]
+    best_fit = particalSwarm(ackley, bounds, velocities)
     plot.plotPositions(best_fit[-1])
     #plot.plotVelocities(best_fit[-1])
     plot.plotFitness(best_fit[-1])

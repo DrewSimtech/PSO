@@ -6,28 +6,26 @@ from itertools import repeat
 from particle import Particle
 
 
-def generateStartPosition(bounds, dimentions):
-    lower = bounds[0]
-    upper = bounds[1]
+def generateStartPosition(bounds):
     pos = []
-    for _ in repeat(None, dimentions):
+    for b in bounds:
+        lower, upper = b
         sample = np.random.random_sample() * (upper - lower) + lower
         pos.append(sample)
     return pos
 
 
-def particalSwarm(func, start_pos, bounds, iterations=500, num_particles=15, c1=2, c2=2):
-    gBestFit = [float('inf')]
-    gBestPos = [start_pos]
-
+def particalSwarm(func, bounds, velocities, c1=2, c2=2, iterations=500, num_particles=15):
     # for each particle: init()
-    dimentions = len(start_pos)
-    # first particle init at starting pos. generate the rest
-    particles = [Particle(start_pos, c1, c2)]
-    for _ in repeat(None, num_particles - 1):
-        pos = generateStartPosition(bounds, dimentions)
+    particles = []
+    for _ in repeat(None, num_particles):
+        pos = generateStartPosition(bounds)
         print('Starting at: ' + str(pos))
-        particles.append(Particle(pos, c1, c2))
+        particles.append(Particle(pos, bounds, velocities, c1, c2))
+
+    # Arrays to track 
+    gBestFit = [float('inf')]
+    gBestPos = []
 
     # for each iteration: update particle
     for _ in repeat(None, iterations):
