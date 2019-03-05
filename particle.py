@@ -6,7 +6,7 @@ import numpy as np
 
 class Particle(object):
 
-    ###################################
+    ################################### 
     # INITIALIZATION                  #
     ###################################
     def __init__(self, pos, bounds, c1, c2):
